@@ -21,8 +21,13 @@
     "typescript": "~3.9.7"
   },
   "dependencies": {
-    "@aws-cdk/aws-iam": "^1.94.1",
+    "@aws-cdk/aws-cloudfront-origins": "^1.94.1",
+    "@aws-cdk/aws-iam": "1.94.1",
+    "@aws-cdk/aws-s3": "^1.94.1",
+    "@aws-cdk/aws-s3-deployment": "^1.94.1",
+    "@aws-cdk/cloudformation-include": "1.94.1",
     "@aws-cdk/core": "1.94.1",
+    "@aws-cdk/custom-resources": "^1.94.1",
     "source-map-support": "^0.5.16"
   }
 }
