@@ -16,8 +16,6 @@ export class Api extends cdk.NestedStack {
   constructor(scope: cdk.Construct, id: string, props: ApiProps) {
     super(scope, id);
 
-    const prefix = `cdkgen-cdkdaydemo`;
-
     const resolverBucket = new s3.Bucket(this, 'amplifyResource');
 
     const resolverDeployment = new s3deploy.BucketDeployment(
@@ -25,7 +23,7 @@ export class Api extends cdk.NestedStack {
       'resolvers',
       {
         sources: [
-          s3deploy.Source.asset(`${__dirname}/backend/api/cdkdaydemo/build`),
+          s3deploy.Source.asset(`${__dirname}/../../amplifyApp/amplify/backend/api/cdkdaydemo/build`),
         ],
         destinationBucket: resolverBucket,
         destinationKeyPrefix: 'generated',

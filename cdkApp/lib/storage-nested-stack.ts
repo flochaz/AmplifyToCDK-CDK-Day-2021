@@ -13,7 +13,7 @@ export class Storage extends cdk.NestedStack {
   constructor(scope: cdk.Construct, id: string, props: StorageProps) {
     super(scope, id);
 
-    const prefix = `cdkgen-cdkdaydemo`;
+    const prefix = `cdkgen-cdkdaydemo-${cdk.Stack.of(this).account}-${cdk.Stack.of(this).region}`;
     const storageNestedStack = new cfn_inc.CfnInclude(this, 'Storage', {
       templateFile: `${__dirname}/../../amplifyApp/amplify/backend/storage/s31f5e069a/s3-cloudformation-template.json`,
       // From cdkApp/lib/backend/storage/s31f5e069a/parameters.json

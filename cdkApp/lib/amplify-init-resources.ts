@@ -8,7 +8,7 @@ export class AmplifyInitResource extends cdk.Construct {
   constructor(scope: cdk.Construct, id: string) {
     super(scope, id);
 
-    const prefix = `cdkgen-cdkdaydemo`;
+    const prefix = `cdkgen-cdkdaydemo-${cdk.Stack.of(this).account}-${cdk.Stack.of(this).region}`;
     this.authRole = new iam.Role(this, 'AuthRole', {
       roleName: `${prefix}-authRole`,
       assumedBy: new iam.FederatedPrincipal(
