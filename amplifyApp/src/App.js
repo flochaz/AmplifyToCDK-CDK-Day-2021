@@ -19,7 +19,24 @@ import AddPhoto from "./Components/AddPhoto";
 import awsconfig from './aws-exports';
 
 // Amplify init
-Amplify.configure(awsconfig);
+
+let config = {aws_project_region: undefined};
+async function fetchConfig(url = 'aws-export.json') {
+  if(!config.aws_project_region) {
+      try {
+          const response = await fetch(url);
+          config = await response.json();
+          console.debug("(Loading config.json) config.json content = ", config);
+          return config;
+        } catch (e) {
+          console.error(`error loading json ${e}`);
+        }
+  } else {
+      return config;
+  } 
+}
+
+fetchConfig().then(config => Amplify.configure(config));
 
 const GRAPHQL_API_REGION = awsconfig.aws_appsync_region
 const GRAPHQL_API_ENDPOINT_URL = awsconfig.aws_appsync_graphqlEndpoint
