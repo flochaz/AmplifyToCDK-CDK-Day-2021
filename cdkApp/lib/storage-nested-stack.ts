@@ -5,23 +5,23 @@ import { AmplifyInitResource } from './amplify-init-resources';
 
 export interface StorageProps extends cdk.NestedStackProps {
   amplifyInitResource: AmplifyInitResource;
+  amplifyEnvName?: string;
 }
 
 export class Storage extends cdk.NestedStack {
-  userFileBucketName: cdk.CfnOutput;
+  public readonly userFileBucketName: cdk.CfnOutput;
 
   constructor(scope: cdk.Construct, id: string, props: StorageProps) {
     super(scope, id);
 
-    const prefix = `cdkgen-cdkdaydemo-${cdk.Stack.of(this).account}-${cdk.Stack.of(this).region}`;
     const storageNestedStack = new cfn_inc.CfnInclude(this, 'Storage', {
       templateFile: `${__dirname}/../../amplifyApp/amplify/backend/storage/s31f5e069a/s3-cloudformation-template.json`,
       // From cdkApp/lib/backend/storage/s31f5e069a/parameters.json
       parameters: {
-        env: 'NONE',
-        bucketName: `${prefix}-storage`,
-        authPolicyName: `${prefix}-authPolicyName`,
-        unauthPolicyName: `${prefix}-unauthPolicyName`,
+        env: props.amplifyEnvName,
+        bucketName: `storage`,
+        authPolicyName: `authPolicyName`,
+        unauthPolicyName: `unauthPolicyName`,
         authRoleName: props.amplifyInitResource.authRole.roleName,
         unauthRoleName: props.amplifyInitResource.unAuthRole.roleName,
         selectedGuestPermissions: ['s3:GetObject', 's3:ListBucket'],
@@ -33,17 +33,17 @@ export class Storage extends cdk.NestedStack {
         ],
         s3PermissionsAuthenticatedPublic:
           's3:PutObject,s3:GetObject,s3:DeleteObject',
-        s3PublicPolicy: `${prefix}-Public_policy`,
+        s3PublicPolicy: `Public_policy`,
         s3PermissionsAuthenticatedUploads: 's3:PutObject',
-        s3UploadsPolicy: `${prefix}-Uploads_policy`,
+        s3UploadsPolicy: `Uploads_policy`,
         s3PermissionsAuthenticatedProtected:
           's3:PutObject,s3:GetObject,s3:DeleteObject',
-        s3ProtectedPolicy: `${prefix}-Protected_policy`,
+        s3ProtectedPolicy: `Protected_policy`,
         s3PermissionsAuthenticatedPrivate:
           's3:PutObject,s3:GetObject,s3:DeleteObject',
-        s3PrivatePolicy: `${prefix}-Private_policy`,
+        s3PrivatePolicy: `Private_policy`,
         AuthenticatedAllowList: 'ALLOW',
-        s3ReadPolicy: `${prefix}-read_policy`,
+        s3ReadPolicy: `read_policy`,
         s3PermissionsGuestPublic: 's3:GetObject',
         s3PermissionsGuestUploads: 'DISALLOW',
         GuestAllowList: 'ALLOW',

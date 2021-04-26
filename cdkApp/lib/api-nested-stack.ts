@@ -1,12 +1,13 @@
 import * as cdk from '@aws-cdk/core';
 import * as cfn_inc from '@aws-cdk/cloudformation-include';
 import s3deploy = require('@aws-cdk/aws-s3-deployment');
-import s3 = require('@aws-cdk/aws-s3');
-import { AmplifyInitResource } from './amplify-init-resources';
 import { Auth } from './auth-nested-stack';
+import { AmplifyInitResource } from './amplify-init-resources';
 
 export interface ApiProps extends cdk.NestedStackProps {
   auth: Auth;
+  amplifyInitResource: AmplifyInitResource,
+  amplifyEnvName?: string;
 }
 
 export class Api extends cdk.NestedStack {
@@ -16,8 +17,8 @@ export class Api extends cdk.NestedStack {
   constructor(scope: cdk.Construct, id: string, props: ApiProps) {
     super(scope, id);
 
-    const resolverBucket = new s3.Bucket(this, 'amplifyResource');
 
+    const pathPrefix = 'generated';
     const resolverDeployment = new s3deploy.BucketDeployment(
       this,
       'resolvers',
@@ -25,16 +26,17 @@ export class Api extends cdk.NestedStack {
         sources: [
           s3deploy.Source.asset(`${__dirname}/../../amplifyApp/amplify/backend/api/cdkdaydemo/build`),
         ],
-        destinationBucket: resolverBucket,
-        destinationKeyPrefix: 'generated',
+        destinationBucket: props.amplifyInitResource.deploymentBucket,
+        destinationKeyPrefix: pathPrefix,
       }
     );
 
-    const template = new cfn_inc.CfnInclude(this, 'QuizAPI', {
+    const template = new cfn_inc.CfnInclude(this, 'Api', {
       templateFile: `${__dirname}/../../amplifyApp/amplify/backend/api/cdkdaydemo/build/cloudformation-template.json`,
       parameters: {
-        S3DeploymentBucket: resolverBucket.bucketName,
-        S3DeploymentRootKey: 'generated',
+        env: props.amplifyEnvName?props.amplifyEnvName:'NONE',
+        S3DeploymentBucket: props.amplifyInitResource.deploymentBucket.bucketName,
+        S3DeploymentRootKey: pathPrefix,
         CreateAPIKey: 0,
         AppSyncApiName: 'cdkdaydemo',
         DynamoDBBillingMode: 'PAY_PER_REQUEST',

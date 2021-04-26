@@ -6,25 +6,33 @@ import { Api } from './api-nested-stack';
 import { FrontendHostingStack } from './cdk-frontend-hosting-nested-stack';
 import { FrontendConfig } from './cdk-frontend-config-stack';
 
+export interface CdkAppProps extends cdk.StackProps {
+  amplifyEnvName?: string;
+}
+
 export class CdkAppStack extends cdk.Stack {
-  constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
+  constructor(scope: cdk.Construct, id: string, props: CdkAppProps) {
     super(scope, id, props);
 
     const amplifyInitResource = new AmplifyInitResource(
       this,
-      'AmplifyDefaultRole'
+      'AmplifyDefaultRoles'
     );
 
-    const storage = new Storage(this, 'Storage', {
+    const storage = new Storage(this, 'StorageCategory', {
       amplifyInitResource: amplifyInitResource,
+      amplifyEnvName: props.amplifyEnvName,
     });
 
-    const auth = new Auth(this, 'Auth', {
+    const auth = new Auth(this, 'AuthCategory', {
       amplifyInitResource: amplifyInitResource,
+      amplifyEnvName: props.amplifyEnvName,
     });
 
-    const api = new Api(this, 'Api', {
+    const api = new Api(this, 'ApiCategory', {
       auth: auth,
+      amplifyInitResource: amplifyInitResource,
+      amplifyEnvName: props.amplifyEnvName,
     });
 
     const config = {
@@ -45,7 +53,11 @@ export class CdkAppStack extends cdk.Stack {
       value: JSON.stringify(config),
     });
 
-    const frontendHosting = new FrontendHostingStack(this, 'FrontendHosting', {});
+    const frontendHosting = new FrontendHostingStack(
+      this,
+      'FrontendHosting',
+      {}
+    );
 
     new FrontendConfig(this, 'aws-export', {
       siteBucket: frontendHosting.websiteBucket,

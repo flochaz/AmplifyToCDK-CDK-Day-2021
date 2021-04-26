@@ -5,6 +5,7 @@ import { AmplifyInitResource } from './amplify-init-resources';
 
 export interface AuthProps extends cdk.NestedStackProps {
   amplifyInitResource: AmplifyInitResource;
+  amplifyEnvName?: string;
 }
 
 export class Auth extends cdk.NestedStack {
@@ -21,7 +22,7 @@ export class Auth extends cdk.NestedStack {
       templateFile: `${__dirname}/../../amplifyApp/amplify/backend/auth/cdkdaydemo5e0d5323/cdkdaydemo5e0d5323-cloudformation-template.json`,
 
       parameters: {
-        env: 'NONE',
+        env: props.amplifyEnvName?props.amplifyEnvName:'NONE',
         identityPoolName: `${prefix}-cdkdaydemo_identitypool`,
         allowUnauthenticatedIdentities: true,
         resourceNameTruncated: 'cdkday',
