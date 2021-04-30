@@ -1,0 +1,186 @@
+type Picture {
+  id: ID!
+  name: String
+  owner: String
+  visibility: Visibility
+  file: S3Object
+  createdAt: String
+  updatedAt: AWSDateTime!
+}
+
+type S3Object {
+  bucket: String!
+  region: String!
+  key: String!
+}
+
+enum Visibility {
+  public
+  private
+}
+
+input S3ObjectInput {
+  bucket: String!
+  region: String!
+  key: String!
+}
+
+enum ModelSortDirection {
+  ASC
+  DESC
+}
+
+type ModelPictureConnection {
+  items: [Picture]
+  nextToken: String
+}
+
+input ModelStringInput {
+  ne: String
+  eq: String
+  le: String
+  lt: String
+  ge: String
+  gt: String
+  contains: String
+  notContains: String
+  between: [String]
+  beginsWith: String
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+  size: ModelSizeInput
+}
+
+input ModelIDInput {
+  ne: ID
+  eq: ID
+  le: ID
+  lt: ID
+  ge: ID
+  gt: ID
+  contains: ID
+  notContains: ID
+  between: [ID]
+  beginsWith: ID
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+  size: ModelSizeInput
+}
+
+input ModelIntInput {
+  ne: Int
+  eq: Int
+  le: Int
+  lt: Int
+  ge: Int
+  gt: Int
+  between: [Int]
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+}
+
+input ModelFloatInput {
+  ne: Float
+  eq: Float
+  le: Float
+  lt: Float
+  ge: Float
+  gt: Float
+  between: [Float]
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+}
+
+input ModelBooleanInput {
+  ne: Boolean
+  eq: Boolean
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+}
+
+input ModelSizeInput {
+  ne: Int
+  eq: Int
+  le: Int
+  lt: Int
+  ge: Int
+  gt: Int
+  between: [Int]
+}
+
+input ModelVisibilityInput {
+  eq: Visibility
+  ne: Visibility
+}
+
+input ModelPictureFilterInput {
+  id: ModelIDInput
+  name: ModelStringInput
+  owner: ModelStringInput
+  visibility: ModelVisibilityInput
+  createdAt: ModelStringInput
+  and: [ModelPictureFilterInput]
+  or: [ModelPictureFilterInput]
+  not: ModelPictureFilterInput
+}
+
+enum ModelAttributeTypes {
+  binary
+  binarySet
+  bool
+  list
+  map
+  number
+  numberSet
+  string
+  stringSet
+  _null
+}
+
+type Query {
+  getPicture(id: ID!): Picture
+  listPictures(filter: ModelPictureFilterInput, limit: Int, nextToken: String): ModelPictureConnection
+}
+
+input CreatePictureInput {
+  id: ID
+  name: String
+  owner: String
+  visibility: Visibility
+  file: S3ObjectInput
+  createdAt: String
+}
+
+input UpdatePictureInput {
+  id: ID!
+  name: String
+  owner: String
+  visibility: Visibility
+  file: S3ObjectInput
+  createdAt: String
+}
+
+input DeletePictureInput {
+  id: ID
+}
+
+type Mutation {
+  createPicture(input: CreatePictureInput!, condition: ModelPictureConditionInput): Picture
+  updatePicture(input: UpdatePictureInput!, condition: ModelPictureConditionInput): Picture
+  deletePicture(input: DeletePictureInput!, condition: ModelPictureConditionInput): Picture
+}
+
+input ModelPictureConditionInput {
+  name: ModelStringInput
+  visibility: ModelVisibilityInput
+  createdAt: ModelStringInput
+  and: [ModelPictureConditionInput]
+  or: [ModelPictureConditionInput]
+  not: ModelPictureConditionInput
+}
+
+type Subscription {
+  onCreatePicture(owner: String!): Picture @aws_subscribe(mutations: ["createPicture"])
+  onUpdatePicture(owner: String!): Picture @aws_subscribe(mutations: ["updatePicture"])
+  onDeletePicture(owner: String!): Picture @aws_subscribe(mutations: ["deletePicture"])
+}
