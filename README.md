@@ -3,7 +3,8 @@ This repo an example on how to migrate an Amplify App to CDK with a no modificat
 
 # Amplify app setup
 
-```
+```bash
+# here I use a public example but feel free to use yours directly
 git clone https://github.com/aws-samples/aws-amplify-graphql.git amplifyApp
 
 cd amplifyApp
@@ -11,13 +12,24 @@ cd amplifyApp
 amplify add auth
 amplify add storage
 amplify add api
+```
+
+If you want to test it and deploy it to your own env just run 
+
+```bash
 amplify push
+```
+
+But if you just want to migrate it straight to CDK, just run the following command in order to generate the necessary files needed for the migration
+
+```bash
+amplify api gql-compile
 ```
 
 # CDK app init
 
-```
-cd -
+```bash
+cd ../
 mkdir cdkApp
 cdk init --language typescript
 npm install
@@ -110,9 +122,10 @@ ls ../amplifyApp/amplify/backend
 npm install @aws-cdk/cloudformation-include
 ```
 
-### Simple categories only
+### Simple categories only (not applicable to the cloned example here)
 
 If your Amplify app is only composed of "simple" categories (which means your `backend/CATEGORY/INSTANCE` folder only contains cloudformation templates) then you can directly use the amplify root stack located under `backend/awscloudformation/nested-cloudformation-stack.yml` .
+
 
 Check [cdkApp/lib/all-in-one-stack.ts](cdkApp/lib/all-in-one-stack.ts) for more details.
 
