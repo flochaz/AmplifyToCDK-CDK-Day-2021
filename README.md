@@ -1,5 +1,26 @@
 
+# How to go from an Amplify app to CDK
+
 This repo an example on how to migrate an Amplify App to CDK with a no modification of Amplify side and a minimum of CDK code.
+
+- [Amplify app setup](#amplify-app-setup)
+- [CDK app init](#cdk-app-init)
+- [Migrate](#migrate)
+  * [Intro: Topology of an amplify project](#intro--topology-of-an-amplify-project)
+  * [Let's migrate !](#let-s-migrate--)
+    + [Simple categories only (not applicable to the cloned example here)](#simple-categories-only--not-applicable-to-the-cloned-example-here-)
+    + [Amplify init migration](#amplify-init-migration)
+      - [Amplify Storage category migration](#amplify-storage-category-migration)
+      - [Amplify Auth category migration](#amplify-auth-category-migration)
+    + [Amplify AppSync API category migration](#amplify-appsync-api-category-migration)
+  * [Replace some Amplify Console features](#replace-some-amplify-console-features)
+    + [CDK web hosting](#cdk-web-hosting)
+    + [CDK CI/CD](#cdk-ci-cd)
+  * [The main cdk stack](#the-main-cdk-stack)
+  * [The result](#the-result)
+
+<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
+
 
 # Amplify app setup
 
@@ -184,3 +205,13 @@ I didn't got to the point of adding CI/CD but it is quite easy with [cdk pipelin
 ## The main cdk stack
 
 [cdkApp/lib/cdk_app-stack.ts](cdkApp/lib/cdk_app-stack.ts) contains the glue between all the element I described here.
+
+
+## The result
+
+After synthesizing your app running the following commands, you should be able to see that the `cdkApp/cdk.out/CdkAppStack.template.json` looks a lot like the `backend/awscloudformation/nested-cloudformation-stack.yml` , the only difference being the resources logical Ids and way to build nested stacks template Url.
+
+```bash
+npm run build
+npm run cdk synth
+```
