@@ -1,3 +1,6 @@
+# OUTDATED
+
+Now Amplify support CDK export : https://aws.amazon.com/blogs/mobile/export-amplify-backends-to-cdk-and-use-with-existing-deployment-pipelines/ !!!
 
 # How to go from an Amplify app to CDK
 
